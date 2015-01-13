@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
+  <title><![CDATA[Stylestats Blog]]></title>
   <link href="http://nene.github.io/stylestats-blog/atom.xml" rel="self"/>
   <link href="http://nene.github.io/stylestats-blog/"/>
-  <updated>2015-01-13T22:26:50+02:00</updated>
+  <updated>2015-01-13T22:36:42+02:00</updated>
   <id>http://nene.github.io/stylestats-blog/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Rene Saarsoo]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
