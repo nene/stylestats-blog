@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Stylestats Blog</title>
+  <title>Better Specificity Graph - Stylestats Blog</title>
   <meta name="author" content="Rene Saarsoo">
 
   
@@ -20,7 +20,7 @@ and ID the highest &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://nene.github.io/stylestats-blog">
+  <link rel="canonical" href="http://nene.github.io/stylestats-blog/blog/2015/01/14/better-specificity-graph">
   <link href="/stylestats-blog/favicon.ico" rel="icon">
   <link href="/stylestats-blog/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylestats-blog/atom.xml" rel="alternate" title="Stylestats Blog" type="application/atom+xml">
@@ -68,15 +68,12 @@ and ID the highest &hellip;">
   
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/stylestats-blog/blog/2015/01/14/better-specificity-graph/">Better Specificity Graph</a></h1>
+      <h1 class="entry-title">Better Specificity Graph</h1>
     
     
       <p class="meta">
@@ -99,7 +96,7 @@ and ID the highest &hellip;">
   </header>
 
 
-  <div class="entry-content"><p>CSS specificity is a mess. In CSS1 there were just three types of
+<div class="entry-content"><p>CSS specificity is a mess. In CSS1 there were just three types of
 selectors: element, class and ID. With element having the lowest
 and ID the highest specificity. Now we also have attribute selectors,
 and while <code>h1.foo</code> and <code>h1[class~="foo"]</code> have the same specificity,
@@ -120,22 +117,127 @@ will automatically generate a graph like the following:</p>
 
 <p><img src="/stylestats-blog/images/specificity-graph/01.png"></p>
 
+<!--more-->
+
+
+<p>This nicely demonstrates the preferrable upward slope in selector
+specificity&mdash;from lower specificity at the beginning to higher values
+at the end of the stylesheet.</p>
+
+<p>The specificity values of this chart are calculated with a simple formula:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>specificity = (ids * 100) + (classes * 10) + elements</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And that&rsquo;s exactly what all the current tools are doing. It works reasonably
+well, but none of the current tools takes <code>!important</code> into account.</p>
+
+<p>While <code>!important</code> doesn&rsquo;t strictly effect the specificity if a selector,
+it does level up the specificity of a single declaration, so from a specificity
+graph stand point it&rsquo;s crucial to see where these important bumps in specificity
+are located.</p>
+
+<p>Extending our formula a little:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>specificity = (important * 1000) + (ids * 100) + (classes * 10) + elements</span></code></pre></td></tr></table></div></figure>
+
+
+<p>results in the following graph:</p>
+
+<p><img src="/stylestats-blog/images/specificity-graph/02.png"></p>
+
+<p>We can now see <code>!important</code>, but that&rsquo;s pretty much all there&rsquo;s left to see.
+Our multiply-by-powers-of-ten formula is showing its weaknesses.</p>
+
+<p>What we really want to express is that selector with one class has higher specificity
+than selector with maximum number of elements, similarly for IDs and <code>!important</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>specificity = elements +
+</span><span class='line'>              classes * max(all_elements) +
+</span><span class='line'>              ids * max(all_classes) * max(all_elements) +
+</span><span class='line'>              important * max(all_ids) * max(all_classes) * max(all_elements)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This gives much better result:</p>
+
+<p><img src="/stylestats-blog/images/specificity-graph/03.png"></p>
+
+<p>Finally, lets add some colors to distinguish how the different types of selectors
+contribute to the overall specificity:</p>
+
+<p><img src="/stylestats-blog/images/specificity-graph/04.png"></p>
 </div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  
-    <footer>
-      <a rel="full-article" href="/stylestats-blog/blog/2015/01/14/better-specificity-graph/">Read on &rarr;</a>
-    </footer>
+
+<span class="byline author vcard">Posted by <span class="fn">Rene Saarsoo</span></span>
+
+      
+
+
+
+
+
+
+
+
   
 
 
-    </article>
+<time datetime="2015-01-14T22:51:00+02:00" pubdate data-updated="true"></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
   
-  <div class="pagination">
-    
-    
-  </div>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://nene.github.io/stylestats-blog/blog/2015/01/14/better-specificity-graph/" data-via="" data-counturl="http://nene.github.io/stylestats-blog/blog/2015/01/14/better-specificity-graph/" >Tweet</a>
+  
+  
+  
 </div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+<!-- 
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/stylestats-blog/blog/2015/01/14/better-specificity-graph/">Better Specificity Graph</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+ &#8211;>
 
     </div>
   </div>

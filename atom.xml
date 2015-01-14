@@ -4,7 +4,7 @@
   <title><![CDATA[Stylestats Blog]]></title>
   <link href="http://nene.github.io/stylestats-blog/atom.xml" rel="self"/>
   <link href="http://nene.github.io/stylestats-blog/"/>
-  <updated>2015-01-13T22:36:42+02:00</updated>
+  <updated>2015-01-14T22:52:08+02:00</updated>
   <id>http://nene.github.io/stylestats-blog/</id>
   <author>
     <name><![CDATA[Rene Saarsoo]]></name>
@@ -12,5 +12,89 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Better Specificity Graph]]></title>
+    <link href="http://nene.github.io/stylestats-blog/blog/2015/01/14/better-specificity-graph/"/>
+    <updated>2015-01-14T22:51:00+02:00</updated>
+    <id>http://nene.github.io/stylestats-blog/blog/2015/01/14/better-specificity-graph</id>
+    <content type="html"><![CDATA[<p>CSS specificity is a mess. In CSS1 there were just three types of
+selectors: element, class and ID. With element having the lowest
+and ID the highest specificity. Now we also have attribute selectors,
+and while <code>h1.foo</code> and <code>h1[class~="foo"]</code> have the same specificity,
+<code>h1#foo</code> has higher specificity than <code>h1[id="foo"]</code>, although they
+both select by ID.  The order of selectors also matters, and the
+inheritance, and the almighty <code>!important</code>&hellip;</p>
+
+<p>Given all this, you really need to be careful with specificity.</p>
+
+<p>A few moths ago Harry Roberts developed the concept of the CSS
+specificity graph:</p>
+
+<blockquote><p>It is a very simple model for diagrammatically assessing the overall<br/>health of your codebase in terms of specificity&#8212;a way of looking at<br/>an entire project’s CSS and highlighting any potentially troublesome<br/>areas of higher-than-ideal specificity.</p><footer><strong>Harry Roberts</strong> <cite><a href='http://csswizardry.com/2014/10/the-specificity-graph/'>The Specificity Graph</a></cite></footer></blockquote>
+
+
+<p>Since then <a href="http://jonassebastianohlsson.com/specificity-graph/">some</a> <a href="http://cssstats.com/">tools</a> have appeared which given a CSS file
+will automatically generate a graph like the following:</p>
+
+<p><img src="http://nene.github.io/stylestats-blog/images/specificity-graph/01.png"></p>
+
+<!--more-->
+
+
+<p>This nicely demonstrates the preferrable upward slope in selector
+specificity&mdash;from lower specificity at the beginning to higher values
+at the end of the stylesheet.</p>
+
+<p>The specificity values of this chart are calculated with a simple formula:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>specificity = (ids * 100) + (classes * 10) + elements</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And that&rsquo;s exactly what all the current tools are doing. It works reasonably
+well, but none of the current tools takes <code>!important</code> into account.</p>
+
+<p>While <code>!important</code> doesn&rsquo;t strictly effect the specificity if a selector,
+it does level up the specificity of a single declaration, so from a specificity
+graph stand point it&rsquo;s crucial to see where these important bumps in specificity
+are located.</p>
+
+<p>Extending our formula a little:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>specificity = (important * 1000) + (ids * 100) + (classes * 10) + elements</span></code></pre></td></tr></table></div></figure>
+
+
+<p>results in the following graph:</p>
+
+<p><img src="http://nene.github.io/stylestats-blog/images/specificity-graph/02.png"></p>
+
+<p>We can now see <code>!important</code>, but that&rsquo;s pretty much all there&rsquo;s left to see.
+Our multiply-by-powers-of-ten formula is showing its weaknesses.</p>
+
+<p>What we really want to express is that selector with one class has higher specificity
+than selector with maximum number of elements, similarly for IDs and <code>!important</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>specificity = elements +
+</span><span class='line'>              classes * max(all_elements) +
+</span><span class='line'>              ids * max(all_classes) * max(all_elements) +
+</span><span class='line'>              important * max(all_ids) * max(all_classes) * max(all_elements)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This gives much better result:</p>
+
+<p><img src="http://nene.github.io/stylestats-blog/images/specificity-graph/03.png"></p>
+
+<p>Finally, lets add some colors to distinguish how the different types of selectors
+contribute to the overall specificity:</p>
+
+<p><img src="http://nene.github.io/stylestats-blog/images/specificity-graph/04.png"></p>
+]]></content>
+  </entry>
   
 </feed>
